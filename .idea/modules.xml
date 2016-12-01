@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/GNS_Client.iml" filepath="$PROJECT_DIR$/GNS_Client.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gns-android-client.iml" filepath="$PROJECT_DIR$/gns-android-client.iml" />
     </modules>
   </component>
 </project>

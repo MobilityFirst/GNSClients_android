@@ -1,4 +1,27 @@
 <resources>
     <string name="app_name">GNS Client</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_gnsclient">GNSClient</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="title_activity_nav_drawer">NavDrawerActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="welcome_gns">
+
+        <h1>GNS Overview</h1>
+        The GNS (Global Name Service) is a logically centralized server that maintains the list of mappings from keys to values. As a database, the GNS shares some semantics with a NoSQL database with each document (a key value container) having a default index which is a Globally Unique Identifier (GUID).
+        A GUID is similar in spirit of Host Identity Protocol and is a self-certifying public key with an associated human readable name. In the GNS a GUID is a 160bit self-certifying identifier derived from a public / private key pair - specifically it is the hash of the public key. GUIDs also have an associated human readable name sometimes referred to as its alias.
+        Certain GUIDs, called account GUIDs have an alias which must be an email address. Upon creation the email address is used to authenticate the account GUID. Account GUIDs can be used by the GUID owner to create additional GUIDs. All GUIDs can also have additional associated human readable names (alias) by which they can be referenced.
+
+    </string>
+    <string name="gns_test_button_text">
+        Run test
+    </string>
+        <string name="log_no_text">
+        No log entries to show
+    </string>
 </resources>
