@@ -25,7 +25,18 @@ import android.view.View;
 
 import android.gns.umass.edu.gnsclient.R;
 
-public class GNSClient extends AppCompatActivity
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.InetSocketAddress;
+
+import edu.umass.cs.gnsclient.client.GNSClient;
+import edu.umass.cs.gnsclient.client.GNSCommand;
+import edu.umass.cs.gnsclient.client.util.GuidEntry;
+import edu.umass.cs.gnsclient.client.util.GuidUtils;
+
+public class GNSClientActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GNSClientActionListener {
 
     /**
@@ -44,9 +55,14 @@ public class GNSClient extends AppCompatActivity
     private ViewPager mViewPager;
     private CoordinatorLayout coordinatorLayout;
     private FloatingActionButton fab;
-    TabLayout tabLayout;
-    HomeFragment homeFragment;
-    LogFragment logFragment;
+    private TabLayout tabLayout;
+    private HomeFragment homeFragment;
+    private LogFragment logFragment;
+
+    GNSClient gnsClient = null;
+    GuidEntry guidEntry = null;
+
+    private static String ACCOUNT_ALIAS = "admin@gns.name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,6 +224,70 @@ public class GNSClient extends AppCompatActivity
     public void runClientTest() {
         Snackbar.make(coordinatorLayout, "Running test..", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
-        logFragment.log("OK, logging some really long text");
+        connectGNSClient();
+        createGNSAccountGuid();
+        writeJson();
+        readJson();
+    }
+
+
+    private void connectGNSClient() {
+        if (gnsClient != null) {
+            InetSocketAddress reconfiguratorAddress = new InetSocketAddress("10.0.0.38", 2178);
+            try {
+                gnsClient = new GNSClient(reconfiguratorAddress);
+            } catch (IOException exception) {
+                logFragment.logException(exception);
+            }
+            logFragment.log("Client connected to GNS!");
+        }
+    }
+
+    private void createGNSAccountGuid() {
+        if (gnsClient == null) {
+            logFragment.log("GNS Client not connected, aborting..");
+        } else {
+            try {
+                guidEntry =  GuidUtils.lookupOrCreateAccountGuid(gnsClient, ACCOUNT_ALIAS, "password", true);
+            } catch (Exception e) {
+                logFragment.logException(e);
+            }
+        }
+    }
+
+    private void writeJson () {
+        JSONObject json = null;
+        try {
+            json = new JSONObject("{\"occupation\":\"busboy\","
+                    + "\"friends\":[\"Joe\",\"Sam\",\"Billy\"],"
+                    + "\"gibberish\":{\"meiny\":\"bloop\",\"einy\":\"floop\"},"
+                    + "\"location\":\"work\",\"name\":\"frank\"}");
+            gnsClient.execute(GNSCommand.update(guidEntry, json));
+            logFragment.log("Updating :");
+            logFragment.log(json.toString(2));
+        } catch (Exception e) {
+            logFragment.logException(e);
+        }
+    }
+
+    private void readJson() {
+        JSONObject result = null;
+        try {
+            result = gnsClient.execute(GNSCommand.read(guidEntry))
+                    .getResultJSONObject();
+            logFragment.log("Reading back: ");
+            logFragment.log(result.toString(2));
+        } catch (Exception e) {
+            logFragment.logException(e);
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (gnsClient != null) {
+            gnsClient.close();
+        }
+        super.onDestroy();
     }
 }

@@ -73,6 +73,11 @@ public class LogFragment extends Fragment {
         noLog.setVisibility(View.GONE);
     }
 
+    public void logException(Exception exception) {
+        log("Exception occured: "+ exception.toString());
+        log(exception.getStackTrace().toString());
+    }
+
     public void log(String content) {
         hideNoLog();
         logView.append(content+"\n");
