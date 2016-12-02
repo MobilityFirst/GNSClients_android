@@ -181,6 +181,9 @@ public class GNSClientActivity extends AppCompatActivity
             public void onClick(DialogInterface dialog, int which) {
                 String m_Text = input.getText().toString();
                 GNSClientPreferences.putServer(GNSClientActivity.this, m_Text);
+                Snackbar.make(coordinatorLayout, "Server address saved", Snackbar.LENGTH_LONG)
+                        .show();
+                gnsClient = null;
             }
         });
         builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
