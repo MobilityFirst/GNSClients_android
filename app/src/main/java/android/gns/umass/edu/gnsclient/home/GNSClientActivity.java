@@ -210,7 +210,7 @@ public class GNSClientActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+        // Handle navigation view item clicks here.d
         int id = item.getItemId();
 
         // if id == R.id.nav_camera, do something
@@ -232,14 +232,18 @@ public class GNSClientActivity extends AppCompatActivity
 
 
     private void connectGNSClient() {
-        if (gnsClient != null) {
+        logFragment.log("Trying to connect..");
+        if (gnsClient == null) {
             InetSocketAddress reconfiguratorAddress = new InetSocketAddress("10.0.0.38", 2178);
             try {
+                logFragment.log("Connecting now to "+reconfiguratorAddress.getHostString());
                 gnsClient = new GNSClient(reconfiguratorAddress);
             } catch (IOException exception) {
                 logFragment.logException(exception);
             }
             logFragment.log("Client connected to GNS!");
+        } else {
+            logFragment.log("Already connected, did not attempt to connect again..");
         }
     }
 
@@ -256,6 +260,10 @@ public class GNSClientActivity extends AppCompatActivity
     }
 
     private void writeJson () {
+        if (gnsClient == null) {
+            logFragment.log("GNS Client not connected, aborting..");
+            return;
+        }
         JSONObject json = null;
         try {
             json = new JSONObject("{\"occupation\":\"busboy\","
@@ -271,6 +279,10 @@ public class GNSClientActivity extends AppCompatActivity
     }
 
     private void readJson() {
+        if (gnsClient == null) {
+            logFragment.log("GNS Client not connected, aborting..");
+            return;
+        }
         JSONObject result = null;
         try {
             result = gnsClient.execute(GNSCommand.read(guidEntry))
