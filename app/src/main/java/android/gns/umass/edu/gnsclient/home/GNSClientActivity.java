@@ -33,6 +33,7 @@ import java.net.InetSocketAddress;
 
 import edu.umass.cs.gnsclient.client.GNSClient;
 import edu.umass.cs.gnsclient.client.GNSCommand;
+import edu.umass.cs.gnsclient.client.http.HttpClient;
 import edu.umass.cs.gnsclient.client.util.GuidEntry;
 import edu.umass.cs.gnsclient.client.util.GuidUtils;
 
@@ -59,7 +60,7 @@ public class GNSClientActivity extends AppCompatActivity
     private HomeFragment homeFragment;
     private LogFragment logFragment;
 
-    GNSClient gnsClient = null;
+    HttpClient gnsClient = null;
     GuidEntry guidEntry = null;
 
     private static String ACCOUNT_ALIAS = "admin@gns.name";
@@ -234,13 +235,8 @@ public class GNSClientActivity extends AppCompatActivity
     private void connectGNSClient() {
         logFragment.log("Trying to connect..");
         if (gnsClient == null) {
-            InetSocketAddress reconfiguratorAddress = new InetSocketAddress("10.0.0.38", 2178);
-            try {
-                logFragment.log("Connecting now to "+reconfiguratorAddress.getHostString());
-                gnsClient = new GNSClient(reconfiguratorAddress);
-            } catch (IOException exception) {
-                logFragment.logException(exception);
-            }
+            logFragment.log("Connecting now to 10.0.0.38");
+            gnsClient = new HttpClient("10.0.0.38", 8080 );
             logFragment.log("Client connected to GNS!");
         } else {
             logFragment.log("Already connected, did not attempt to connect again..");
@@ -270,7 +266,7 @@ public class GNSClientActivity extends AppCompatActivity
                     + "\"friends\":[\"Joe\",\"Sam\",\"Billy\"],"
                     + "\"gibberish\":{\"meiny\":\"bloop\",\"einy\":\"floop\"},"
                     + "\"location\":\"work\",\"name\":\"frank\"}");
-            gnsClient.execute(GNSCommand.update(guidEntry, json));
+            gnsClient.update(guidEntry, json);
             logFragment.log("Updating :");
             logFragment.log(json.toString(2));
         } catch (Exception e) {
@@ -285,8 +281,7 @@ public class GNSClientActivity extends AppCompatActivity
         }
         JSONObject result = null;
         try {
-            result = gnsClient.execute(GNSCommand.read(guidEntry))
-                    .getResultJSONObject();
+            result = gnsClient.read(guidEntry);
             logFragment.log("Reading back: ");
             logFragment.log(result.toString(2));
         } catch (Exception e) {
