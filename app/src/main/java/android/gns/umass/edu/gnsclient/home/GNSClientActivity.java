@@ -1,8 +1,10 @@
 package android.gns.umass.edu.gnsclient.home;
 
+import android.content.DialogInterface;
 import android.gns.umass.edu.gnsclient.fragments.HomeFragment;
 import android.gns.umass.edu.gnsclient.fragments.GNSClientActionListener;
 import android.gns.umass.edu.gnsclient.fragments.LogFragment;
+import android.gns.umass.edu.gnsclient.preferences.GNSClientPreferences;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -11,6 +13,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -19,11 +22,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import android.gns.umass.edu.gnsclient.R;
+import android.widget.EditText;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -153,13 +158,42 @@ public class GNSClientActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            showServerSettings();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    void prepareForShowingTab(int position) {
+
+    private void showServerSettings() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Server address");
+        builder.setMessage("Enter the server address");
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setText(GNSClientPreferences.getServer(GNSClientActivity.this));
+        builder.setView(input);
+
+        builder.setPositiveButton("SAVE", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String m_Text = input.getText().toString();
+                GNSClientPreferences.putServer(GNSClientActivity.this, m_Text);
+            }
+        });
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    private void prepareForShowingTab(int position) {
         switch (position) {
             case 0: fab.hide(); break;
             case 1: fab.show(); break;
@@ -235,8 +269,9 @@ public class GNSClientActivity extends AppCompatActivity
     private void connectGNSClient() {
         logFragment.log("Trying to connect..");
         if (gnsClient == null) {
-            logFragment.log("Connecting now to 10.0.0.38");
-            gnsClient = new HttpClient("10.0.0.38", 8080 );
+            String serverAddress = GNSClientPreferences.getServer(this);
+            logFragment.log("Connecting now to "+ serverAddress);
+            gnsClient = new HttpClient(serverAddress, 8080 );
             logFragment.log("Client connected to GNS!");
         } else {
             logFragment.log("Already connected, did not attempt to connect again..");
@@ -297,4 +332,6 @@ public class GNSClientActivity extends AppCompatActivity
         }
         super.onDestroy();
     }
+
+
 }
