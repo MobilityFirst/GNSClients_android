@@ -1,5 +1,6 @@
 package android.gns.umass.edu.gnsclient.home;
 
+import android.app.TabActivity;
 import android.content.DialogInterface;
 import android.gns.umass.edu.gnsclient.fragments.HomeFragment;
 import android.gns.umass.edu.gnsclient.fragments.GNSClientActionListener;
@@ -41,6 +42,9 @@ import edu.umass.cs.gnsclient.client.GNSCommand;
 import edu.umass.cs.gnsclient.client.http.HttpClient;
 import edu.umass.cs.gnsclient.client.util.GuidEntry;
 import edu.umass.cs.gnsclient.client.util.GuidUtils;
+import edu.umass.cs.gnsserver.main.GNSConfig;
+
+import static edu.umass.cs.gnsclient.client.GNSClientConfig.GNSCC.ENABLE_SECRET_KEY;
 
 public class GNSClientActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, GNSClientActionListener {
@@ -68,7 +72,7 @@ public class GNSClientActivity extends AppCompatActivity
     HttpClient gnsClient = null;
     GuidEntry guidEntry = null;
 
-    private static String ACCOUNT_ALIAS = "admin@gns.name";
+    private static String ACCOUNT_ALIAS = "example_ACS_master_alias@gns.name";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -260,6 +264,9 @@ public class GNSClientActivity extends AppCompatActivity
 
     @Override
     public void runClientTest() {
+
+        mViewPager.setCurrentItem(2, true);
+
         Snackbar.make(coordinatorLayout, "Running test..", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show();
         connectGNSClient();
@@ -270,6 +277,7 @@ public class GNSClientActivity extends AppCompatActivity
 
 
     private void connectGNSClient() {
+
         logFragment.log("Trying to connect..");
         if (gnsClient == null) {
             String serverAddress = GNSClientPreferences.getServer(this);
