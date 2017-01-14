@@ -14,7 +14,7 @@ public final class GNSClientPreferences {
     private static final String PREF_NAME = "GNS_CLIENT_PREFS";
     public static String getServer(Context context) {
         SharedPreferences prefs = context.getSharedPreferences( PREF_NAME, MODE_PRIVATE);
-        String serverAddress = prefs.getString("SERVER_ADDRESS", "127.0.0.1");
+        String serverAddress = prefs.getString("SERVER_ADDRESS", "127.0.0.1:8080");
         return serverAddress;
 
 

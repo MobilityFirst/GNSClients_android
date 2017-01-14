@@ -10,17 +10,6 @@ android {
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
-        //testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
-        jackOptions {
-            enabled true
-        }
-
-        dexOptions {
-            incremental true
-            javaMaxHeapSize "8g"
-            preDexLibraries = false
-        }
 
     }
 
@@ -33,19 +22,13 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
     }
 }
 
 dependencies {
-    //compile fileTree(include: ['*.jar'], dir: 'libs')
-
-    /*androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })*/
-    compile files("libs/gnsclient-1.19.11.jar")
-    //testCompile 'junit:junit:4.12'
+    compile files("libs/gnsclient-android-1.19.11.jar")
     compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'com.android.support:design:25.0.1'
     compile 'com.android.support:multidex:1.0.1'

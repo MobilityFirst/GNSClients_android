@@ -281,8 +281,14 @@ public class GNSClientActivity extends AppCompatActivity
         logFragment.log("Trying to connect..");
         if (gnsClient == null) {
             String serverAddress = GNSClientPreferences.getServer(this);
+
+            if (serverAddress.split(":").length != 2) {
+                logFragment.log("Illegal server address, use <host>:<port> format");
+                return;
+            }
+
             logFragment.log("Connecting now to "+ serverAddress);
-            gnsClient = new HttpClient(serverAddress, 8080 );
+            gnsClient = new HttpClient(serverAddress.split(":")[0], Integer.parseInt(serverAddress.split(":")[1]));
             logFragment.log("Client connected to GNS!");
         } else {
             logFragment.log("Already connected, did not attempt to connect again..");
